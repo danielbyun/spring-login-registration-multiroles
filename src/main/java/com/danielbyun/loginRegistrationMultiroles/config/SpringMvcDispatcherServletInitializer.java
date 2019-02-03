@@ -1,0 +1,6 @@
+package com.danielbyun.loginRegistrationMultiroles.config;
+
+import org.springframework.security.web.context.AbstractSecurityWebApplicationInitializer;
+
+public class SpringMvcDispatcherServletInitializer extends AbstractSecurityWebApplicationInitializer {
+}
