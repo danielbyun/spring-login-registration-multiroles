@@ -3,7 +3,3 @@
         $('select').formSelect();
     });
 })(jQuery);
-
-// $(document).ready(function() {
-//     $("select").formSelct();
-// });

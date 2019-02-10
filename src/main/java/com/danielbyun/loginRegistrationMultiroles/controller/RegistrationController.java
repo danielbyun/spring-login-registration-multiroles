@@ -63,10 +63,8 @@ public class RegistrationController {
             BindingResult bindingResult,
             Model model) {
         String userName = user.getUserName();
-        String role = user.getFormRole();
 
         logger.info("processing registration form for: " + userName);
-        logger.info("role: " + role);
 
         if (bindingResult.hasErrors()) {
             model.addAttribute("user", new AppUser());
