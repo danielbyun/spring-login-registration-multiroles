@@ -21,7 +21,7 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/resource/css/login.css">
     </head>
     <body>
-        <div id="" class="container row">
+        <div class="container row">
             <h3 class="col s12 row">sign in</h3>
             <main class="row">
                 <!-- Login Form -->
