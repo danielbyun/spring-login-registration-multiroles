@@ -25,7 +25,7 @@ hs_err_pid*
 # sensitive files
 *.iml
 *.map
-src/main/resources/persistence-mysql.properties
+*.properties
 
 /target/
 
