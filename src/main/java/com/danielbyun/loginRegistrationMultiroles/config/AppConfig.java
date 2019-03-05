@@ -1,13 +1,13 @@
 package com.danielbyun.loginRegistrationMultiroles.config;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
-import org.springframework.context.annotation.Bean;
-import org.springframework.core.env.Environment;
+import com.mchange.v2.c3p0.DriverManagerDataSource;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.core.env.Environment;
 import org.springframework.web.servlet.ViewResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
@@ -16,6 +16,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.Properties;
 import java.util.logging.Logger;
 
@@ -50,34 +52,51 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     // define bean for datasource
+//    @Bean
+//    public DataSource dataSource() {
+//        // create connection pool
+//        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+//
+//        // set the jdbc driver class
+//        try {
+//            // read db configs from the resource file
+//            dataSource.setDriverClass(environment.getProperty("jdbc.driverClass"));
+//        } catch (PropertyVetoException exc) {
+//            throw new RuntimeException(exc);
+//        }
+//
+//        // log the connection props
+//        // check if we're reading the correct data from the properties file
+//        logger.info(">> jdbc.url = " + environment.getProperty("jdbc.url"));
+//        logger.info(">> jdbc.user = " + environment.getProperty("jdbc.user"));
+//
+//        // set database connection props
+//        dataSource.setJdbcUrl(environment.getProperty("jdbc.url"));
+//        dataSource.setUser(environment.getProperty("jdbc.user"));
+//        dataSource.setPassword(environment.getProperty("jdbc.password"));
+//
+//        // set connection pool props
+//        dataSource.setInitialPoolSize(getIntProperties("connection.pool.initialPoolSize"));
+//        dataSource.setMinPoolSize(getIntProperties("connection.pool.minPoolSize"));
+//        dataSource.setMaxPoolSize(getIntProperties("connection.pool.maxPoolSize"));
+//        dataSource.setMaxIdleTime(getIntProperties("connection.pool.maxIdleTime"));
+//
+//        return dataSource;
+//    }
+
+    // datasource bean for heroku
     @Bean
-    public DataSource dataSource() {
-        // create connection pool
-        ComboPooledDataSource dataSource = new ComboPooledDataSource();
+    public DataSource dataSource() throws URISyntaxException {
+        URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
 
-        // set the jdbc driver class
-        try {
-            // read db configs from the resource file
-            dataSource.setDriverClass(environment.getProperty("jdbc.driverClass"));
-        } catch (PropertyVetoException exc) {
-            throw new RuntimeException(exc);
-        }
+        String username = dbUri.getUserInfo().split(":")[0];
+        String password = dbUri.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
 
-        // log the connection props
-        // check if we're reading the correct data from the properties file
-        logger.info(">> jdbc.url = " + environment.getProperty("jdbc.url"));
-        logger.info(">> jdbc.user = " + environment.getProperty("jdbc.user"));
-
-        // set database connection props
-        dataSource.setJdbcUrl(environment.getProperty("jdbc.url"));
-        dataSource.setUser(environment.getProperty("jdbc.user"));
-        dataSource.setPassword(environment.getProperty("jdbc.password"));
-
-        // set connection pool props
-        dataSource.setInitialPoolSize(getIntProperties("connection.pool.initialPoolSize"));
-        dataSource.setMinPoolSize(getIntProperties("connection.pool.minPoolSize"));
-        dataSource.setMaxPoolSize(getIntProperties("connection.pool.maxPoolSize"));
-        dataSource.setMaxIdleTime(getIntProperties("connection.pool.maxIdleTime"));
+        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+        dataSource.setJdbcUrl(dbUrl);
+        dataSource.setUser(username);
+        dataSource.setPassword(password);
 
         return dataSource;
     }
