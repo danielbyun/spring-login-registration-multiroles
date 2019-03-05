@@ -27,4 +27,6 @@ hs_err_pid*
 *.map
 src/main/resources/persistence-mysql.properties
 
-target
+/target/
+
+.idea/**

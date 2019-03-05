@@ -52,54 +52,54 @@ public class AppConfig implements WebMvcConfigurer {
     }
 
     // define bean for datasource
-//    @Bean
-//    public DataSource dataSource() {
-//        // create connection pool
-//        ComboPooledDataSource dataSource = new ComboPooledDataSource();
-//
-//        // set the jdbc driver class
-//        try {
-//            // read db configs from the resource file
-//            dataSource.setDriverClass(environment.getProperty("jdbc.driverClass"));
-//        } catch (PropertyVetoException exc) {
-//            throw new RuntimeException(exc);
-//        }
-//
-//        // log the connection props
-//        // check if we're reading the correct data from the properties file
-//        logger.info(">> jdbc.url = " + environment.getProperty("jdbc.url"));
-//        logger.info(">> jdbc.user = " + environment.getProperty("jdbc.user"));
-//
-//        // set database connection props
-//        dataSource.setJdbcUrl(environment.getProperty("jdbc.url"));
-//        dataSource.setUser(environment.getProperty("jdbc.user"));
-//        dataSource.setPassword(environment.getProperty("jdbc.password"));
-//
-//        // set connection pool props
-//        dataSource.setInitialPoolSize(getIntProperties("connection.pool.initialPoolSize"));
-//        dataSource.setMinPoolSize(getIntProperties("connection.pool.minPoolSize"));
-//        dataSource.setMaxPoolSize(getIntProperties("connection.pool.maxPoolSize"));
-//        dataSource.setMaxIdleTime(getIntProperties("connection.pool.maxIdleTime"));
-//
-//        return dataSource;
-//    }
-
-    // datasource bean for heroku
     @Bean
-    public DataSource dataSource() throws URISyntaxException {
-        URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
+    public DataSource dataSource() {
+        // create connection pool
+        ComboPooledDataSource dataSource = new ComboPooledDataSource();
 
-        String username = dbUri.getUserInfo().split(":")[0];
-        String password = dbUri.getUserInfo().split(":")[1];
-        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+        // set the jdbc driver class
+        try {
+            // read db configs from the resource file
+            dataSource.setDriverClass(environment.getProperty("jdbc.driverClass"));
+        } catch (PropertyVetoException exc) {
+            throw new RuntimeException(exc);
+        }
 
-        DriverManagerDataSource dataSource = new DriverManagerDataSource();
-        dataSource.setJdbcUrl(dbUrl);
-        dataSource.setUser(username);
-        dataSource.setPassword(password);
+        // log the connection props
+        // check if we're reading the correct data from the properties file
+        logger.info(">> jdbc.url = " + environment.getProperty("jdbc.url"));
+        logger.info(">> jdbc.user = " + environment.getProperty("jdbc.user"));
+
+        // set database connection props
+        dataSource.setJdbcUrl(environment.getProperty("jdbc.url"));
+        dataSource.setUser(environment.getProperty("jdbc.user"));
+        dataSource.setPassword(environment.getProperty("jdbc.password"));
+
+        // set connection pool props
+        dataSource.setInitialPoolSize(getIntProperties("connection.pool.initialPoolSize"));
+        dataSource.setMinPoolSize(getIntProperties("connection.pool.minPoolSize"));
+        dataSource.setMaxPoolSize(getIntProperties("connection.pool.maxPoolSize"));
+        dataSource.setMaxIdleTime(getIntProperties("connection.pool.maxIdleTime"));
 
         return dataSource;
     }
+
+    // datasource bean for heroku
+//    @Bean
+//    public DataSource dataSource() throws URISyntaxException {
+//        URI dbUri = new URI(System.getenv("CLEARDB_DATABASE_URL"));
+//
+//        String username = dbUri.getUserInfo().split(":")[0];
+//        String password = dbUri.getUserInfo().split(":")[1];
+//        String dbUrl = "jdbc:mysql://" + dbUri.getHost() + dbUri.getPath();
+//
+//        DriverManagerDataSource dataSource = new DriverManagerDataSource();
+//        dataSource.setJdbcUrl(dbUrl);
+//        dataSource.setUser(username);
+//        dataSource.setPassword(password);
+//
+//        return dataSource;
+//    }
 
     private int getIntProperties(String propName) {
         String propVal = environment.getProperty(propName);
